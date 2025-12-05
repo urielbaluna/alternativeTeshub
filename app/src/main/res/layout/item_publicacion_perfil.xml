@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Botón eliminar arriba a la derecha -->
+        <ImageView
+            android:id="@+id/btnEliminarPublicacion"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="Eliminar"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+
+        <!-- Título del proyecto -->
+        <TextView
+            android:id="@+id/tvTituloPublicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título del proyecto"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnEliminarPublicacion"/>
+
+        <!-- Hace cuanto -->
+        <TextView
+            android:id="@+id/tvHaceCuanto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hace 2 días"
+            android:textSize="14sp"
+            android:layout_below="@id/tvTituloPublicacion"
+            android:paddingTop="4dp"/>
+
+
+        <!-- Calificación y fecha -->
+        <LinearLayout
+            android:id="@+id/layout_calificacion_fecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/tvHaceCuanto"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
