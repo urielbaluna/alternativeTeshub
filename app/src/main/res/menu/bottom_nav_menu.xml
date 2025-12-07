@@ -11,6 +11,11 @@
         android:title="Eventos" />
 
     <item
+        android:id="@+id/nav_connections"
+        android:icon="@drawable/ic_person"
+        android:title="Conectar" />
+
+    <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_profile"
         android:title="Perfil" />

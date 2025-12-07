@@ -75,7 +75,8 @@ class MainActivity : AppCompatActivity() {
                 // --- CORRECCIÓN: Guardar también la matrícula ---
                 getSharedPreferences("sesion", MODE_PRIVATE).edit()
                     .putString("token", response.token)
-                    .putString("matricula", response.matricula) // <-- LÍNEA AÑADIDA
+                    .putString("matricula", response.matricula)
+                    .putString("rol", response.rol)
                     .apply()
 
                 Toast.makeText(this@MainActivity, "Bienvenido ${response.nombre}", Toast.LENGTH_SHORT).show()

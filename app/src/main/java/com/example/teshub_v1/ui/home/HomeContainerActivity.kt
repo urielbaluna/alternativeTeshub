@@ -15,6 +15,11 @@ import com.example.teshub_v1.ui.publicaciones.PublicacionesFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.example.teshub_v1.ui.eventos.EventosFragment
+import com.example.teshub_v1.ui.usuarios.AsesorDashboardFragment
+import com.example.teshub_v1.ui.usuarios.ConnectionsFragment
+import android.content.Context
+import android.util.Log
+
 class HomeContainerActivity : AppCompatActivity() {
 
     private var currentFragment: Fragment? = null
@@ -30,6 +35,16 @@ class HomeContainerActivity : AppCompatActivity() {
 
         //Boton agregar publicacion
         val fab: FloatingActionButton = findViewById(R.id.fab_add_post)
+        val sharedPref = getSharedPreferences("sesion", Context.MODE_PRIVATE)
+        val rol = sharedPref.getString("rol", "") ?: ""
+        val isAdvisor = rol.equals("Asesor", ignoreCase = true) || rol == "2"
+        Log.d("HomeContainerActivity", "Rol: $rol, isAdvisor: $isAdvisor")
+
+
+        if (isAdvisor) {
+            bottomNavigationView.menu.findItem(R.id.nav_connections)?.title = "Dashboard"
+            // bottomNavigationView.menu.findItem(R.id.nav_connections)?.setIcon(R.drawable.ic_dashboard)
+        }
 
         fab.setOnClickListener {
             val intent = Intent(this, CrearPublicacionActivity::class.java)
@@ -68,6 +83,17 @@ class HomeContainerActivity : AppCompatActivity() {
                     searchBar.visibility = View.GONE
                     fab.visibility = View.GONE  // O View.VISIBLE si quieres el botón de crear evento
                     loadFragment(EventosFragment())
+                    true
+                }
+                R.id.nav_connections -> {
+                    searchBar.visibility = View.GONE
+                    fab.visibility = View.GONE
+
+                    if (isAdvisor) {
+                        loadFragment(AsesorDashboardFragment())
+                    } else {
+                        loadFragment(ConnectionsFragment())
+                    }
                     true
                 }
                 R.id.nav_profile -> {

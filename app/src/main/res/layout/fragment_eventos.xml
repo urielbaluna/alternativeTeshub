@@ -4,13 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     tools:context=".ui.eventos.EventosFragment">
+
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No hay eventos disponibles"
+        android:textSize="16sp"
+        android:textColor="#757575"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEventos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
         tools:listitem="@layout/list_item_evento" />
 
     <ProgressBar
@@ -29,6 +41,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
         app:backgroundTint="#2DA036"
-        app:tint="@android:color/white"/>
+        app:tint="@android:color/white"
+        android:contentDescription="Crear Evento"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

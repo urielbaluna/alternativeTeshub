@@ -3,12 +3,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#2DA036</color>
-        <color name="primaryGreen">#2DA036</color>
-        <color name="accentYellow">#FFC107</color>
+    <color name="primaryGreen">#2DA036</color>
+    <color name="accentYellow">#FFC107</color>
     <color name="teal_700">#018786</color>
     <color name="darker_gray">#A9A9A9</color>
 
     <!-- Colores personalizados de la App -->
     <color name="verde_teshub">#4CAF50</color>
+
+    <color name="green_500">#2DA036</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="red_500">#D32F2F</color>
+    <color name="gray_500">#9E9E9E</color>
 
 </resources>

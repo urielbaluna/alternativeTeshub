@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Título -->
         <TextView
             android:id="@+id/tvTituloRegistro"
             android:layout_width="wrap_content"
@@ -34,7 +33,6 @@
             android:textColor="#757575"
             android:layout_marginBottom="24dp" />
 
-        <!-- Foto de Perfil -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="120dp"
             android:layout_height="120dp"
@@ -66,12 +64,11 @@
             app:iconTint="#2DA036"
             android:layout_marginBottom="24dp" />
 
-        <!-- Campo: Nombre -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+            app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="#2DA036"
             app:boxStrokeColor="#2DA036"
             app:hintTextColor="#2DA036"
@@ -84,13 +81,12 @@
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo: Apellido -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Apellido"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+            app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="#2DA036"
             app:boxStrokeColor="#2DA036"
             app:hintTextColor="#2DA036"
@@ -103,13 +99,12 @@
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo: Correo -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Correo electrónico"
-            app:startIconDrawable="@android:drawable/ic_dialog_email"
+            app:startIconDrawable="@drawable/ic_email"
             app:startIconTint="#2DA036"
             app:boxStrokeColor="#2DA036"
             app:hintTextColor="#2DA036"
@@ -122,13 +117,12 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo: Matrícula -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Matrícula"
-            app:startIconDrawable="@android:drawable/ic_menu_agenda"
+            app:startIconDrawable="@drawable/ic_matricula"
             app:startIconTint="#2DA036"
             app:boxStrokeColor="#2DA036"
             app:hintTextColor="#2DA036"
@@ -141,18 +135,17 @@
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo: Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Contraseña"
-            app:startIconDrawable="@android:drawable/ic_lock_lock"
+            app:startIconDrawable="@drawable/ic_lock"
             app:startIconTint="#2DA036"
             app:endIconMode="password_toggle"
             app:boxStrokeColor="#2DA036"
             app:hintTextColor="#2DA036"
-            app:helperText="Minimo 4 caracteres:\n   1 mayúscula, 1 minúscula, 1 número, 1 simbolo"
+            app:helperText="Mínimo 4 caracteres:\n1 mayúscula, 1 minúscula, 1 número, 1 símbolo"
             app:helperTextTextColor="#757575"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
@@ -163,7 +156,59 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón Registrar -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecciona tu rol:"
+            android:textColor="#2DA036"
+            android:textSize="14sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"
+                app:tint="#2DA036"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="Icono de Rol"/>
+
+            <Spinner
+                android:id="@+id/spinnerRol"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCodigoAcceso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Código de Invitación Docente"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="#2DA036"
+            app:boxStrokeColor="#2DA036"
+            app:hintTextColor="#2DA036"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCodigoAcceso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrar"
             android:layout_width="match_parent"
@@ -174,7 +219,6 @@
             app:cornerRadius="12dp"
             android:backgroundTint="#2DA036" />
 
-        <!-- Link: Ya tengo cuenta -->
         <TextView
             android:id="@+id/tvYaTengoCuenta"
             android:layout_width="wrap_content"

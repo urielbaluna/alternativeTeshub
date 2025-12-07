@@ -8,57 +8,51 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class Evento(
-    @Json(name = "id") val id: Int,
+    @Json(name = "id_evento") val id: Int,
     @Json(name = "titulo") val titulo: String,
     @Json(name = "fecha") val fecha: String,
     @Json(name = "descripcion") val descripcion: String,
-    @Json(name = "urlFoto") val urlFoto: String?,
-    @Json(name = "ubicacion") val ubicacion: Ubicacion,
+
+    @Json(name = "url_foto") val urlFoto: String?, // Backend manda 'url_foto'
+
+    val categoria: String? = "General",
+
+    @Json(name = "ubicacion") val ubicacionObj: Ubicacion?,
+    @Json(name = "ubicacion_nombre") val ubicacionNombre: String? = null,
+
+    val tags: List<String>? = emptyList(),
+
     @Json(name = "organizadores") val organizadores: List<Organizador>,
-    @Json(name = "cupoMaximo") val cupoMaximo: Int = 50,
-    @Json(name = "asistentesRegistrados") val asistentesRegistrados: Int = 0,
-    @Json(name = "usuarioRegistrado") val usuarioRegistrado: Boolean = false
+
+    @Json(name = "cupo_maximo") val cupoMaximo: Int = 50, // Backend manda 'cupo_maximo'
+    @Json(name = "asistentes_registrados") val asistentesRegistrados: Int = 0,
+    @Json(name = "usuario_registrado") val usuarioRegistrado: Boolean = false,
+
+    // Campos calculados o extras
+    @Json(name = "inscrito") val inscrito: Boolean = false,
+
+    // Banderas de rol (vienen de listarEventos)
+    @Json(name = "es_organizador") val esOrganizador: Boolean = false,
+    @Json(name = "es_asistente") val esAsistente: Boolean = false
+
 ) : Parcelable {
-    /**
-     * Función helper para mostrar los nombres completos de los organizadores
-     * en un solo string, separados por comas.
-     */
-    fun organizadoresTexto(): String {
-        return organizadores.joinToString(separator = ", ") { "${it.nombre} ${it.apellido}" }
-    }
 
-    /**
-     * Calcula los lugares disponibles
-     */
-    val cupoDisponible: Int
-        get() = cupoMaximo - asistentesRegistrados
-
-    /**
-     * Verifica si hay lugares disponibles
-     */
     val hayLugaresDisponibles: Boolean
-        get() = cupoDisponible > 0
-
-    /**
-     * Retorna un texto formateado para mostrar la asistencia
-     */
-    fun textoAsistencia(): String {
-        return "$asistentesRegistrados/$cupoMaximo asistentes"
-    }
+        get() = asistentesRegistrados < cupoMaximo
 }
 
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class Ubicacion(
-    @Json(name = "latitud") val latitud: Double,
-    @Json(name = "longitud") val longitud: Double
+    val latitud: Double,
+    val longitud: Double
 ) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class Organizador(
-    @Json(name = "matricula") val matricula: String,
-    @Json(name = "nombre") val nombre: String,
-    // --- CAMPO AÑADIDO ---
-    @Json(name = "apellido") val apellido: String? // Se marca como opcional para evitar crashes si la API no lo envía
+    val matricula: String,
+    val nombre: String,
+    val apellido: String?,
+    val imagen: String?
 ) : Parcelable

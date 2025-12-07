@@ -3,110 +3,96 @@ package com.example.teshub_v1.ui.eventos
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.teshub_v1.R
-import com.example.teshub_v1.adapter.EventosAdapter
+import com.example.teshub_v1.ui.eventos.EventosAdapter
 import com.example.teshub_v1.data.network.RetrofitClient
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.teshub_v1.databinding.FragmentEventosBinding
 import kotlinx.coroutines.launch
 
 class EventosFragment : Fragment() {
 
-    private lateinit var rvEventos: RecyclerView
-    private lateinit var eventosAdapter: EventosAdapter
-    private lateinit var progressBar: ProgressBar
+    private var _binding: FragmentEventosBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: EventosAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_eventos, container, false)
-        rvEventos = view.findViewById(R.id.rvEventos)
-        progressBar = view.findViewById(R.id.progressBarEventos)
-
-        val fabAddEvent: FloatingActionButton = view.findViewById(R.id.fab_add_event)
-        fabAddEvent.setOnClickListener {
-            val intent = Intent(activity, CrearEventoActivity::class.java)
-            startActivity(intent)
-        }
-
-        return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        cargarEventosDesdeAPI()
+    ): View {
+        _binding = FragmentEventosBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-    }
 
-    private fun setupRecyclerView() {
-        eventosAdapter = EventosAdapter(emptyList()) { evento ->
-            val intent = Intent(activity, EventoDetalleActivity::class.java)
-            intent.putExtra("EVENTO_EXTRA", evento)
+        // Configurar RecyclerView
+        binding.rvEventos.layoutManager = LinearLayoutManager(context)
+        adapter = EventosAdapter(emptyList()) { evento ->
+            // Al hacer click, ir al detalle
+            val intent = Intent(context, EventoDetalleActivity::class.java)
+            intent.putExtra("evento_id", evento.id)
             startActivity(intent)
         }
-        rvEventos.adapter = eventosAdapter
-        rvEventos.layoutManager = LinearLayoutManager(context)
+        binding.rvEventos.adapter = adapter
+
+        // CORRECCIÓN: Usar el ID correcto (fab_add_event -> fabAddEvent)
+        binding.fabAddEvent.setOnClickListener {
+            val intent = Intent(context, CrearEventoActivity::class.java)
+            startActivity(intent)
+        }
+
+        cargarEventos()
     }
 
-    private fun cargarEventosDesdeAPI() {
-        progressBar.visibility = View.VISIBLE
+    override fun onResume() {
+        super.onResume()
+        cargarEventos()
+    }
 
-        val sharedPref = activity?.getSharedPreferences("sesion", Context.MODE_PRIVATE)
-        val token = sharedPref?.getString("token", null)
+    private fun cargarEventos() {
+        val token = activity?.getSharedPreferences("sesion", Context.MODE_PRIVATE)
+            ?.getString("token", null)
 
-        if (token == null) {
-            progressBar.visibility = View.GONE
-            if (isAdded && context != null) {
-                Toast.makeText(context, "Error de sesión. Por favor, inicia sesión de nuevo.", Toast.LENGTH_LONG).show()
-            }
-            return
-        }
+        if (token == null) return
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = RetrofitClient.eventosService.getEventos("Bearer $token")
-                
-                // Verificar que el fragment sigue adjunto antes de actualizar la UI
-                if (!isAdded || context == null) return@launch
-                
-                progressBar.visibility = View.GONE
+                // CORRECCIÓN: Usar el ID correcto (progressBarEventos)
+                binding.progressBarEventos.visibility = View.VISIBLE
 
-                if (response.isSuccessful) {
-                    // --- CORRECCIÓN: Extraer la lista del objeto de respuesta ---
-                    val eventos = response.body()?.eventos ?: emptyList()
-                    eventosAdapter = EventosAdapter(eventos) { evento ->
-                        val intent = Intent(activity, EventoDetalleActivity::class.java)
-                        intent.putExtra("EVENTO_EXTRA", evento)
-                        startActivity(intent)
+                val response = RetrofitClient.eventosService.getEventos("Bearer $token")
+
+                if (response.isSuccessful && response.body() != null) {
+                    val lista = response.body()!!.eventos
+
+                    if (lista.isEmpty()) {
+                        binding.tvEmptyState.visibility = View.VISIBLE // Ahora sí existe
+                        binding.rvEventos.visibility = View.GONE
+                    } else {
+                        binding.tvEmptyState.visibility = View.GONE
+                        binding.rvEventos.visibility = View.VISIBLE
+                        adapter.updateList(lista)
                     }
-                    rvEventos.adapter = eventosAdapter
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("EventosFragment", "Error al cargar eventos: $errorBody")
-                    Toast.makeText(context, "Error al cargar eventos: $errorBody", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                // Verificar que el fragment sigue adjunto antes de mostrar el error
-                if (!isAdded || context == null) return@launch
-                
-                progressBar.visibility = View.GONE
-                Log.e("EventosFragment", "Excepción: ${e.message}")
-                Toast.makeText(context, "Excepción: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show()
+            } finally {
+                binding.progressBarEventos.visibility = View.GONE
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

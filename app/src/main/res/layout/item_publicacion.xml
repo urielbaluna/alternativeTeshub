@@ -1,91 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@android:color/white">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
-    <TextView
-        android:id="@+id/tv_titulo_proyecto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Título del proyecto"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:ellipsize="end"
-        android:maxLines="1"/>
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/tv_descripcion_proyecto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Descripción del proyecto"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="4dp"
-        android:maxLines="2"
-        android:ellipsize="end"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_image"
+            android:layout_width="80dp"
+            android:layout_height="100dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F5F5F5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="6dp">
+            <ImageView
+                android:id="@+id/iv_portada"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_pdf"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/tv_calificacion"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_titulo"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="\u2605 0.0"
-            android:textSize="14sp"
-            android:textColor="@android:color/holo_orange_dark"/> <TextView
-        android:id="@+id/tv_fecha_proyecto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="01/12/2025"
-        android:textSize="14sp"
-        android:textColor="@android:color/black"
-        android:layout_marginStart="16dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/comentariosLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp"
-        android:padding="4dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_comment"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="4dp"
-            app:tint="@android:color/darker_gray"
-            xmlns:app="http://schemas.android.com/apk/res-auto"/>
-
-        <TextView
-            android:id="@+id/contadorComentarios"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="14sp"
+            android:layout_marginStart="12dp"
+            android:text="Título de la Investigación"
+            android:textColor="#2DA036"
             android:textStyle="bold"
-            android:textColor="@android:color/black"/>
+            android:textSize="16sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintStart_toEndOf="@+id/card_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/card_image" />
 
         <TextView
+            android:id="@+id/tv_autor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:text="Autor(es)"
+            android:textColor="#616161"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/card_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_titulo" />
+
+        <TextView
+            android:id="@+id/tv_descripcion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:text="Descripción breve del proyecto..."
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintStart_toEndOf="@+id/card_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_autor" />
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_image">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_tags"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_star"
+                app:tint="#FFC107"/> <TextView
+            android:id="@+id/tv_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" comentarios"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginStart="4dp"/>
-    </LinearLayout>
-</LinearLayout>
+            android:text="4.5"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"
+            android:textColor="#616161"/>
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_download"
+                app:tint="#757575"
+                android:layout_marginStart="16dp"/> <TextView
+            android:id="@+id/tv_downloads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="127"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"
+            android:textColor="#616161"/>
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_eye"
+                app:tint="#757575"
+                android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/tv_views"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.2k"
+                android:textSize="12sp"
+                android:layout_marginStart="4dp"
+                android:textColor="#616161"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ver"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Ver"
+                android:textSize="10sp"
+                android:paddingHorizontal="12dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="16dp"
+                android:backgroundTint="#2DA036"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

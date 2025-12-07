@@ -48,6 +48,12 @@
         <activity android:name=".ui.eventos.CrearEventoActivity" />
         <activity android:name=".ui.eventos.SeleccionarUbicacionActivity" />
         <activity android:name=".ui.eventos.EditarEventoActivity" />
-        <activity android:name=".ui.ComentariosActivity" />
+        <activity android:name=".ui.publicaciones.ComentariosActivity" />
+
+        <activity
+            android:name=".ui.publicaciones.PublicacionDetalleActivity"
+            android:label="Detalle de Publicación"
+            android:parentActivityName=".ui.home.HomeContainerActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
     </application>
 </manifest>

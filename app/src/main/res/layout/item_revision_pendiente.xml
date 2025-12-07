@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_pdf"
+            app:tint="#FFC107"
+            android:layout_marginEnd="12dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_titulo_tesis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título de la Tesis"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tv_autor_tesis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Por: Uriel Barrera"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+
+            <TextView
+                android:id="@+id/tv_estado_tesis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Pendiente de revisión"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FF9800"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btn_ir_revision"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_edit"
+            app:tint="#2196F3"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

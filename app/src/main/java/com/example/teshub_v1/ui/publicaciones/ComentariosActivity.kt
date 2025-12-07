@@ -1,4 +1,4 @@
-package com.example.teshub_v1.ui
+package com.example.teshub_v1.ui.publicaciones
 
 import android.os.Bundle
 import android.widget.Button
@@ -9,13 +9,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teshub_v1.R
+import com.example.teshub_v1.data.model.ComentarioRequest
 import com.example.teshub_v1.data.model.CrearComentarioResponse
 import com.example.teshub_v1.data.model.PublicacionDetalleResponse
 import com.example.teshub_v1.data.network.RetrofitClient
+import com.example.teshub_v1.ui.publicaciones.ComentariosAdapter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
-import com.example.teshub_v1.data.model.ComentarioRequest
+import java.util.Locale
+import java.util.TimeZone
 
 class ComentariosActivity : AppCompatActivity() {
 

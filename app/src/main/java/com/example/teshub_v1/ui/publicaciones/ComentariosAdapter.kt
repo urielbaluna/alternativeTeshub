@@ -1,4 +1,4 @@
-package com.example.teshub_v1.ui
+package com.example.teshub_v1.ui.publicaciones
 
 import android.view.LayoutInflater
 import android.view.View

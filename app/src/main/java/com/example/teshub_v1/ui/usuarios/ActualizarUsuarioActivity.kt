@@ -22,8 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
@@ -35,20 +33,23 @@ class ActualizarUsuarioActivity : AppCompatActivity() {
     private lateinit var etApellido: TextInputEditText
     private lateinit var etCorreo: TextInputEditText
     private lateinit var etPassword: TextInputEditText
-    private lateinit var btnGuardar: Button
 
+    // Campos nuevos
+    private lateinit var etCarrera: TextInputEditText
+    private lateinit var etSemestre: TextInputEditText
+    private lateinit var etBiografia: TextInputEditText
+    private lateinit var etUbicacion: TextInputEditText
+
+    private lateinit var btnGuardar: Button
     private var selectedImageUri: Uri? = null
 
-    // Lanzador para abrir la galería
-    private val imagePickerLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.let { uri ->
-                selectedImageUri = uri
-                // Mostrar la nueva imagen seleccionada
-                Glide.with(this).load(uri).into(ivPerfil)
-            }
+    // Guardamos el correo original para comparar
+    private var emailOriginal: String = ""
+
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            ivPerfil.setImageURI(it)
         }
     }
 
@@ -62,25 +63,23 @@ class ActualizarUsuarioActivity : AppCompatActivity() {
         etApellido = findViewById(R.id.etApellido)
         etCorreo = findViewById(R.id.etCorreo)
         etPassword = findViewById(R.id.etPassword)
+
+        etCarrera = findViewById(R.id.etCarrera)
+        etSemestre = findViewById(R.id.etSemestre)
+        etBiografia = findViewById(R.id.etBiografia)
+        etUbicacion = findViewById(R.id.etUbicacion)
+
         btnGuardar = findViewById(R.id.btnGuardar)
 
-        // 1. Cargar datos actuales
         cargarDatosActuales()
 
-        // 2. Configurar clic en la imagen para cambiarla
         ivPerfil.setOnClickListener {
-            abrirGaleria()
+            imagePickerLauncher.launch("image/*")
         }
 
-        // 3. Guardar cambios
         btnGuardar.setOnClickListener {
             guardarCambios()
         }
-    }
-
-    private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        imagePickerLauncher.launch(intent)
     }
 
     private fun cargarDatosActuales() {
@@ -94,6 +93,13 @@ class ActualizarUsuarioActivity : AppCompatActivity() {
                     etNombre.setText(perfil.nombre)
                     etApellido.setText(perfil.apellido)
                     etCorreo.setText(perfil.correo)
+                    emailOriginal = perfil.correo // Guardamos para validar después
+
+                    // Cargar nuevos campos
+                    etCarrera.setText(perfil.carrera)
+                    etSemestre.setText(perfil.semestre)
+                    etBiografia.setText(perfil.biografia)
+                    etUbicacion.setText(perfil.ubicacion)
 
                     if (!perfil.imagen.isNullOrEmpty()) {
                         val baseUrl = if (BuildConfig.API_BASE_URL.endsWith("/")) BuildConfig.API_BASE_URL else "${BuildConfig.API_BASE_URL}/"
@@ -114,68 +120,76 @@ class ActualizarUsuarioActivity : AppCompatActivity() {
     private fun guardarCambios() {
         val token = getSharedPreferences("sesion", Context.MODE_PRIVATE).getString("token", null) ?: return
 
-        val nombre = etNombre.text.toString()
-        val apellido = etApellido.text.toString()
-        val correo = etCorreo.text.toString()
-        val password = etPassword.text.toString()
+        // Preparar partes de texto (RequestBody)
+        val nombrePart = etNombre.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val apellidoPart = etApellido.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
-        // Convertir a RequestBody
-        val nombrePart = nombre.toRequestBody("text/plain".toMediaTypeOrNull())
-        val apellidoPart = apellido.toRequestBody("text/plain".toMediaTypeOrNull())
-        val correoPart = correo.toRequestBody("text/plain".toMediaTypeOrNull())
+        // Lógica de correo: Si no cambió, mandamos null para evitar validación de seguridad (Error 400)
+        val correoActual = etCorreo.text.toString().trim()
+        val correoPart = if (correoActual != emailOriginal) {
+            correoActual.toRequestBody("text/plain".toMediaTypeOrNull())
+        } else {
+            null
+        }
 
-        // Contraseña es opcional
-        val passwordPart = if (password.isNotEmpty()) {
-            password.toRequestBody("text/plain".toMediaTypeOrNull())
+        val carreraPart = etCarrera.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val semestrePart = etSemestre.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val bioPart = etBiografia.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val ubiPart = etUbicacion.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+        // Password es opcional
+        val passText = etPassword.text.toString()
+        val passwordPart = if (passText.isNotEmpty()) {
+            passText.toRequestBody("text/plain".toMediaTypeOrNull())
         } else null
 
         // Imagen es opcional
         var imagenPart: MultipartBody.Part? = null
         selectedImageUri?.let { uri ->
-            val file = getFileFromUri(uri)
-            if (file != null) {
-                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                imagenPart = MultipartBody.Part.createFormData("imagen", file.name, requestFile)
-            }
+            val file = uriToFile(uri)
+            val requestFile = file.readBytes().toRequestBody("image/jpeg".toMediaTypeOrNull())
+            imagenPart = MultipartBody.Part.createFormData("imagen", file.name, requestFile)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                // SOLUCIÓN DEL ERROR: Usamos argumentos nombrados
                 val response = RetrofitClient.usuariosService.actualizarUsuario(
-                    "Bearer $token",
-                    nombrePart,
-                    apellidoPart,
-                    correoPart,
-                    passwordPart,
-                    imagenPart
+                    token = "Bearer $token",
+                    nombre = nombrePart,
+                    apellido = apellidoPart,
+                    correo = correoPart,
+                    contrasena = passwordPart,
+                    carrera = carreraPart,
+                    semestre = semestrePart,
+                    biografia = bioPart,
+                    ubicacion = ubiPart,
+                    imagen = imagenPart
                 )
 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@ActualizarUsuarioActivity, response.mensaje, Toast.LENGTH_LONG).show()
-                    finish() // Cierra la actividad y vuelve al perfil
+                    finish()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@ActualizarUsuarioActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    val errorMsg = if (correoPart != null)
+                        "Error: Cambiar correo requiere verificación (no implementada aquí)"
+                    else
+                        "Error: ${e.message}"
+                    Toast.makeText(this@ActualizarUsuarioActivity, errorMsg, Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    // Función auxiliar para obtener archivo real desde URI
-    private fun getFileFromUri(uri: Uri): File? {
-        return try {
-            val contentResolver = applicationContext.contentResolver
-            val inputStream = contentResolver.openInputStream(uri)
-            val file = File(applicationContext.cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
-            val outputStream = FileOutputStream(file)
-            inputStream?.copyTo(outputStream)
-            inputStream?.close()
-            outputStream.close()
-            file
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+    private fun uriToFile(uri: Uri): File {
+        val inputStream = contentResolver.openInputStream(uri)!!
+        val tempFile = File(cacheDir, "temp_profile_${System.currentTimeMillis()}.jpg")
+        val outputStream = FileOutputStream(tempFile)
+        inputStream.copyTo(outputStream)
+        inputStream.close()
+        outputStream.close()
+        return tempFile
     }
 }

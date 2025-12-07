@@ -1,146 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:layout_height="wrap_content">
 
-        <!-- Imagen del Evento -->
         <ImageView
-            android:id="@+id/ivImagenEvento"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:id="@+id/iv_evento_imagen"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:background="#E0E0E0"
-            android:contentDescription="Imagen del evento"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            android:src="@drawable/ic_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Contenido del Evento -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_gradient_shadow"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_evento_imagen" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:orientation="vertical">
+            android:layout_margin="12dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="#2DA036"
+            app:cardElevation="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Título -->
             <TextView
-                android:id="@+id/tvTituloEvento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#2E7D32"
-                android:maxLines="2"
-                android:ellipsize="end"
-                tools:text="Conferencia de Inteligencia Artificial" />
-
-            <!-- Descripción -->
-            <TextView
-                android:id="@+id/tvDescripcionEvento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="13sp"
-                android:textColor="#616161"
-                android:maxLines="2"
-                android:ellipsize="end"
-                tools:text="Una conferencia dedicada a los últimos avances en IA y machine learning..." />
-
-            <!-- Fecha -->
-            <LinearLayout
+                android:id="@+id/tv_categoria"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="Conferencia"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/iv_evento_imagen">
+
+            <TextView
+                android:id="@+id/tv_titulo_evento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título del Evento"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    android:tint="#757575"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_eventos"
+                    app:tint="#757575"
+                    android:layout_marginEnd="8dp"/>
 
                 <TextView
-                    android:id="@+id/tvFechaEvento"
+                    android:id="@+id/tv_fecha_hora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="#757575"
-                    tools:text="miércoles, 14 de febrero de 2024" />
-
+                    android:text="Vie, 12 Oct • 10:00 AM"
+                    android:textSize="14sp"
+                    android:textColor="#616161" />
             </LinearLayout>
 
-            <!-- Hora -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@android:drawable/ic_menu_recent_history"
-                    android:tint="#757575"
-                    android:layout_marginEnd="4dp" />
-
-                <TextView
-                    android:id="@+id/tvHoraEvento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="#757575"
-                    tools:text="09:00" />
-
-            </LinearLayout>
-
-            <!-- Asistentes -->
-            <LinearLayout
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="#757575"
+                    android:layout_marginEnd="8dp"/> <TextView
+                android:id="@+id/tv_ubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="6dp"
-                android:gravity="center_vertical"
-                android:background="#E8F5E9"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:layout_marginEnd="8dp">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@android:drawable/ic_menu_manage"
-                    android:tint="#2E7D32"
-                    android:layout_marginEnd="4dp" />
-
-                <TextView
-                    android:id="@+id/tvAsistentesEvento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="11sp"
-                    android:textColor="#2E7D32"
-                    android:textStyle="bold"
-                    tools:text="45/100 asistentes" />
-
+                android:text="Auditorio Principal"
+                android:textSize="14sp"
+                android:textColor="#616161"
+                android:maxLines="1"
+                android:ellipsize="end"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:paddingTop="8dp"
+                android:background="@drawable/border_top_gray"> <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_person"
+                app:tint="#757575"
+                android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/tv_asistentes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="45/100 Asistentes"
+                    android:textSize="12sp"
+                    android:textColor="#757575" />
+
+                <TextView
+                    android:id="@+id/tv_estado_registro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REGISTRARSE"
+                    android:textStyle="bold"
+                    android:textColor="#2DA036"
+                    android:textSize="12sp"
+                    android:padding="8dp" />
+            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

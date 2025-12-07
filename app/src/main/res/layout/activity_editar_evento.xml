@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.eventos.EditarEventoActivity">
+    android:fillViewport="true"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,103 +18,204 @@
             android:text="Editar Evento"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Título del Evento">
+            android:layout_height="180dp"
+            android:layout_marginBottom="24dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTituloEvento"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="match_parent"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F5F5F5">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Matrículas de organizadores (separadas por coma)">
+                <ImageView
+                    android:id="@+id/iv_evento_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_image"
+                    android:padding="60dp"
+                    app:tint="#BDBDBD"/>
+            </androidx.cardview.widget.CardView>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etOrganizadoresEvento"
+            <View
+                android:id="@+id/btn_cambiar_foto"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toca para cambiar foto"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:layout_marginBottom="8dp"/>
+        </FrameLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Descripción">
-
+            android:hint="Título del evento"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescripcionEvento"
+                android:id="@+id/et_titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-                android:minLines="4" />
+                android:inputType="textCapSentences"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Cupo Máximo de Asistentes">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCupoMaximo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:startIconDrawable="@drawable/ic_eventos"
-            android:hint="Fecha y Hora del Evento">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFechaEvento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="true"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Botón de foto oculto temporalmente -->
-        <Button
-            android:id="@+id/btnSeleccionarFotoEvento"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Cambiar Foto"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnSeleccionarUbicacion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Cambiar Ubicación" />
 
         <TextView
-            android:id="@+id/tvCoordenadasSeleccionadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Ubicación no seleccionada" />
+            android:text="Categoría"
+            android:textColor="#2DA036"
+            android:layout_marginBottom="4dp"/>
 
-        <Button
-            android:id="@+id/btnGuardarCambios"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edittext_background"
+            android:paddingHorizontal="12dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <Spinner
+                android:id="@+id/spinner_categoria"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Guardar Cambios" />
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
 
-    </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Fecha"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginEnd="8dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_fecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Hora"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginStart="8dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_hora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del Lugar"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="8dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_ubicacion_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_seleccionar_mapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar Ubicación en Mapa"
+            android:textColor="#2DA036"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            app:strokeColor="#2DA036"
+            app:icon="@drawable/ic_search"
+            app:iconTint="#2DA036"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_coordenadas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubicación actual cargada"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Cupo Máximo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_cupo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Etiquetas"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="24dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_guardar_cambios"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Guardar Cambios"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            android:backgroundTint="#2196F3"/> </LinearLayout>
 </ScrollView>

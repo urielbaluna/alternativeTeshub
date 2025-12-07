@@ -30,4 +30,12 @@ object RetrofitClient {
     val eventosService: EventosService by lazy {
         retrofit.create(EventosService::class.java)
     }
+
+    val asesoriasService: AsesoriasService by lazy {
+        retrofit.create(AsesoriasService::class.java)
+    }
+
+    val revisionesService: RevisionesService by lazy {
+        retrofit.create(RevisionesService::class.java)
+    }
 }

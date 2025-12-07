@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_profile"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#E0E0E0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_nombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="Nombre Usuario"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_accion"
+            app:layout_constraintStart_toEndOf="@+id/iv_avatar"
+            app:layout_constraintTop_toTopOf="@+id/iv_avatar" />
+
+        <TextView
+            android:id="@+id/tv_carrera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Ingeniería • 8vo Semestre"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            app:layout_constraintEnd_toEndOf="@+id/tv_nombre"
+            app:layout_constraintStart_toStartOf="@+id/tv_nombre"
+            app:layout_constraintTop_toBottomOf="@+id/tv_nombre" />
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_intereses"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_nombre"
+            app:layout_constraintTop_toBottomOf="@+id/tv_carrera">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_intereses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+        </HorizontalScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_accion"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Conectar"
+            android:textSize="12sp"
+            android:paddingHorizontal="12dp"
+            app:cornerRadius="18dp"
+            android:backgroundTint="#2DA036"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

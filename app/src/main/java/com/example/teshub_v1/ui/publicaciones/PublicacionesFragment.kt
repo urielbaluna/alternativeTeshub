@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.teshub_v1.R
 import com.example.teshub_v1.data.model.Publicacion
 import com.example.teshub_v1.data.network.RetrofitClient
-import com.example.teshub_v1.ui.ComentariosActivity
+import com.example.teshub_v1.ui.publicaciones.ComentariosActivity
 import kotlinx.coroutines.launch
 
 class PublicacionesFragment : Fragment() {
@@ -41,17 +41,12 @@ class PublicacionesFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = PublicacionesAdapter(
-            emptyList(),
-            onClick = { publicacion ->
-                Toast.makeText(context, "Publicación: ${publicacion.nombre}", Toast.LENGTH_SHORT).show()
-            },
-            onComentariosClick = { publicacion ->
-                val intent = Intent(context, ComentariosActivity::class.java)
-                intent.putExtra("idPublicacion", publicacion.id) // Pasamos el ID
-                startActivity(intent)
-            }
-        )
+        adapter = PublicacionesAdapter(mutableListOf()) { publicacion ->
+            val intent = Intent(context, PublicacionDetalleActivity::class.java)
+            intent.putExtra("id_publi", publicacion.id)
+            intent.putExtra("modo_asesor", false) // Es visualización normal
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
 
         cargarPublicaciones()
@@ -105,7 +100,7 @@ class PublicacionesFragment : Fragment() {
         } else {
             val lowerCaseQuery = query.lowercase()
             allPublicaciones.filter {
-                it.nombre.lowercase().contains(lowerCaseQuery) ||
+                it.titulo.lowercase().contains(lowerCaseQuery) ||
                         it.descripcion.lowercase().contains(lowerCaseQuery)
             }
         }
