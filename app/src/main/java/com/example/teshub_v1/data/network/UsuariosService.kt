@@ -1,11 +1,13 @@
 package com.example.teshub_v1.data.network
 
+import com.example.teshub_v1.data.model.ActualizarInteresesRequest
 import com.example.teshub_v1.data.model.GeneralResponse
 import com.example.teshub_v1.data.model.Interes
 import com.example.teshub_v1.data.model.LoginResponse
 import com.example.teshub_v1.data.model.PerfilResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -42,7 +44,7 @@ interface UsuariosService {
     @GET("api/usuarios/ver-info")
     suspend fun getPerfil(
         @Header("Authorization") token: String
-    ): PerfilResponse
+    ): Response<PerfilResponse>
 
     @Multipart
     @PUT("api/usuarios/actualizar")
@@ -64,20 +66,22 @@ interface UsuariosService {
 
     // Obtener catálogo de intereses disponibles
     @GET("api/usuarios/intereses/catalogo")
-    suspend fun getCatalogoIntereses(): List<Interes>
+    suspend fun getCatalogoIntereses(
+        @Header("Authorization") token: String
+    ): Response<List<Interes>>
 
     // Guardar mis intereses seleccionados
     @POST("api/usuarios/intereses/actualizar")
     suspend fun actualizarMisIntereses(
         @Header("Authorization") token: String,
-        @Body body: Map<String, List<Int>>
-    ): GeneralResponse
+        @Body body: ActualizarInteresesRequest
+    ): Response<GeneralResponse>
 
     // Obtener sugerencias de conexión
     @GET("api/usuarios/sugerencias")
     suspend fun obtenerSugerencias(
         @Header("Authorization") token: String
-    ): List<PerfilResponse>
+    ): Response<List<PerfilResponse>>
 
     // Conectar (Seguir) a un usuario
     @POST("api/usuarios/conectar")
@@ -113,5 +117,5 @@ interface UsuariosService {
     @GET("api/usuarios/conexiones")
     suspend fun obtenerMisConexiones(
         @Header("Authorization") token: String
-    ): List<PerfilResponse>
+    ): Response<List<PerfilResponse>>
 }

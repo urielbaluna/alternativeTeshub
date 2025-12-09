@@ -176,7 +176,7 @@ class RegisterActivity : AppCompatActivity() {
             val lineEnd = "\r\n"
             val twoHyphens = "--"
 
-            val url = URL("${BuildConfig.API_BASE_URL}/api/usuarios/registrar")
+            val url = URL("${BuildConfig.API_BASE_URL}api/usuarios/registrar")
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.connectTimeout = 15000

@@ -133,9 +133,11 @@ class PerfilFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 // Usamos el endpoint que actualizamos en el backend que trae TODO
-                val perfil = RetrofitClient.usuariosService.getPerfil("Bearer $token")
+                val response = RetrofitClient.usuariosService.getPerfil("Bearer $token")
 
                 if (!isAdded || context == null) return@launch
+                if (response.isSuccessful && response.body() != null) {
+                    val perfil = response.body()!!
 
                 // 1. Datos Básicos
                 tvUserName.text = "${perfil.nombre} ${perfil.apellido}"
@@ -150,15 +152,15 @@ class PerfilFragment : Fragment() {
                 tvBio.text = if (!perfil.biografia.isNullOrEmpty()) perfil.biografia else "Sin biografía disponible."
                 tvLocation.text = if (!perfil.ubicacion.isNullOrEmpty()) perfil.ubicacion else "Ubicación no especificada"
 
-                // 3. Estadísticas
+                // 3. Estadísticas (Con validación de nulos segura)
                 tvStatPubs.text = perfil.totalPublicaciones.toString()
                 tvStatFollowers.text = (perfil.estadisticas?.seguidores ?: 0).toString()
                 tvStatFollowing.text = (perfil.estadisticas?.seguidos ?: 0).toString()
 
                 // 4. Imagen
                 if (!perfil.imagen.isNullOrEmpty()) {
-                    val baseUrl = BuildConfig.API_BASE_URL
-                    val fullUrl = if (baseUrl.endsWith("/")) baseUrl + perfil.imagen else "$baseUrl${perfil.imagen}"
+                    val baseUrl = BuildConfig.API_BASE_URL.removeSuffix("/") + "/"
+                    val fullUrl = baseUrl + perfil.imagen
                     Glide.with(this@PerfilFragment)
                         .load(fullUrl)
                         .placeholder(R.drawable.ic_profile)
@@ -168,26 +170,27 @@ class PerfilFragment : Fragment() {
 
                 // 5. Intereses (Dinámicos)
                 chipGroupInterests.removeAllViews()
-                perfil.intereses?.forEach { interes ->
+                perfil.intereses.forEach { interes -> // 'intereses' ya no es nullable en el modelo corregido
                     val chip = Chip(context)
                     chip.text = interes.nombre
-                    chip.setChipBackgroundColorResource(R.color.white) // O un color verde bajito
+                    chip.setChipBackgroundColorResource(R.color.white)
                     chip.setChipStrokeColorResource(android.R.color.darker_gray)
                     chip.chipStrokeWidth = 1f
                     chipGroupInterests.addView(chip)
                 }
 
+                // Lógica de Asesor
                 if (perfil.rol.equals("Estudiante", ignoreCase = true) || perfil.rol.contains("Estudiante")) {
                     cardAsesor.visibility = View.VISIBLE
                     cargarMiAsesor(token)
                 } else {
-                    cardAsesor.visibility = View.GONE // Los profesores no tienen asesor
+                    cardAsesor.visibility = View.GONE
                 }
 
-                // 6. Cargar Publicaciones (Si la respuesta del perfil ya las incluye o llamar aparte)
-                // Tu backend actual "getPerfil" no devuelve la lista de publicaciones, solo contadores.
-                // Así que llamamos a la otra función.
                 loadUserPublications(token)
+                } else {
+                    Toast.makeText(context, "Error al obtener perfil: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
 
             } catch (e: Exception) {
                 if (isAdded) Toast.makeText(context, "Error al cargar perfil", Toast.LENGTH_SHORT).show()

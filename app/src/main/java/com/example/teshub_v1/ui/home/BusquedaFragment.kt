@@ -132,7 +132,7 @@ class BusquedaFragment : Fragment() {
                             ubicacion = null,
                             estado = 1,
                             intereses = item.intereses.map { nombreInteres ->
-                                Interes(id = 0, nombre = nombreInteres)
+                                Interes(id_interes = 0, nombre = nombreInteres)
                             },
                             estadisticas = null,
                             totalPublicaciones = 0,

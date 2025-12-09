@@ -146,6 +146,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Intereses Académicos"
+            android:textStyle="bold"
+            android:textColor="#2DA036"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecciona los temas de tu interés:"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupIntereses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chipSpacing="8dp"
+            app:singleSelection="false"
+            android:layout_marginBottom="16dp">
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Seguridad (Opcional)"
             android:textStyle="bold"
             android:textColor="#2DA036"

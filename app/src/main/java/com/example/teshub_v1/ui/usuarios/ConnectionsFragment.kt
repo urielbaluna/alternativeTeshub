@@ -93,24 +93,28 @@ class ConnectionsFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val usuarios = if (esSugerencias) {
+                // 1. Llamamos al servicio (ahora devuelve Response<...>)
+                val response = if (esSugerencias) {
                     RetrofitClient.usuariosService.obtenerSugerencias("Bearer $token")
                 } else {
                     RetrofitClient.usuariosService.obtenerMisConexiones("Bearer $token")
                 }
 
-                // Actualizamos la lista local y notificamos al adapter
-                listaUsuarios.clear()
-                if (usuarios.isNotEmpty()) {
-                    listaUsuarios.addAll(usuarios)
-                    adapter.notifyDataSetChanged()
-                    recyclerView.visibility = View.VISIBLE
-                } else {
-                    adapter.notifyDataSetChanged() // Limpiar vista si estaba llena
-                    tvEmpty.text = if (esSugerencias) "No hay sugerencias por ahora" else "Aún no tienes conexiones"
-                    tvEmpty.visibility = View.VISIBLE
-                }
+                // 2. Verificamos éxito
+                if (response.isSuccessful && response.body() != null) {
+                    val usuarios = response.body()!!
 
+                    listaUsuarios.clear()
+                    if (usuarios.isNotEmpty()) {
+                        listaUsuarios.addAll(usuarios)
+                        adapter.notifyDataSetChanged()
+                        recyclerView.visibility = View.VISIBLE
+                    } else {
+                        adapter.notifyDataSetChanged()
+                        tvEmpty.text = if (esSugerencias) "No hay sugerencias" else "Sin conexiones"
+                        tvEmpty.visibility = View.VISIBLE
+                    }
+                }
             } catch (e: Exception) {
                 if (isAdded) {
                     Log.e("ConnectionsFragment", "Error al cargar: ${e.message}", e)
