@@ -1,7 +1,9 @@
 package com.example.teshub_v1.ui.usuarios
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,9 @@ class ConnectionsFragment : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var adapter: ConnectionsAdapter
 
+    // Lista local para manipular los datos (borrar items al conectar)
+    private var listaUsuarios: MutableList<PerfilResponse> = mutableListOf()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,12 +52,18 @@ class ConnectionsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        // Inicializamos el adapter con nuestra lista local mutable
         adapter = ConnectionsAdapter(
-            mutableListOf(),
-            onConnectClick = { user -> conectarConUsuario(user) },
+            listaUsuarios,
+            onConnectClick = { user, position ->
+                // Pasamos la posición para poder actualizar la lista visualmente
+                conectarConUsuario(user, position)
+            },
             onItemClick = { user ->
-                // Aquí podrías abrir un "PerfilAjenoActivity" para ver su perfil completo
-                Toast.makeText(context, "Ver perfil de ${user.nombre}", Toast.LENGTH_SHORT).show()
+                // Navegar al perfil del usuario
+                val intent = Intent(context, PerfilOtroUsuarioActivity::class.java)
+                intent.putExtra("matricula", user.matricula)
+                startActivity(intent)
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -85,28 +96,33 @@ class ConnectionsFragment : Fragment() {
                 val usuarios = if (esSugerencias) {
                     RetrofitClient.usuariosService.obtenerSugerencias("Bearer $token")
                 } else {
-                    // Si aún no implementas el endpoint "obtenerConexiones" en backend,
-                    // puedes devolver lista vacía o implementar esa función rápido.
-                    // RetrofitClient.usuariosService.obtenerMisConexiones("Bearer $token")
-                    emptyList() // Placeholder hasta que tengas el endpoint
+                    RetrofitClient.usuariosService.obtenerMisConexiones("Bearer $token")
                 }
 
-                if (usuarios.isEmpty()) {
+                // Actualizamos la lista local y notificamos al adapter
+                listaUsuarios.clear()
+                if (usuarios.isNotEmpty()) {
+                    listaUsuarios.addAll(usuarios)
+                    adapter.notifyDataSetChanged()
+                    recyclerView.visibility = View.VISIBLE
+                } else {
+                    adapter.notifyDataSetChanged() // Limpiar vista si estaba llena
                     tvEmpty.text = if (esSugerencias) "No hay sugerencias por ahora" else "Aún no tienes conexiones"
                     tvEmpty.visibility = View.VISIBLE
-                } else {
-                    adapter.updateList(usuarios)
-                    recyclerView.visibility = View.VISIBLE
                 }
+
             } catch (e: Exception) {
-                Toast.makeText(context, "Error al cargar: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Log.e("ConnectionsFragment", "Error al cargar: ${e.message}", e)
+                    Toast.makeText(context, "Error al cargar: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             } finally {
                 progressBar.visibility = View.GONE
             }
         }
     }
 
-    private fun conectarConUsuario(usuario: PerfilResponse) {
+    private fun conectarConUsuario(usuario: PerfilResponse, position: Int) {
         val token = activity?.getSharedPreferences("sesion", Context.MODE_PRIVATE)
             ?.getString("token", null) ?: return
 
@@ -117,8 +133,26 @@ class ConnectionsFragment : Fragment() {
 
                 Toast.makeText(context, response.mensaje, Toast.LENGTH_SHORT).show()
 
-                // Recargar lista para reflejar cambios (quitar de sugerencias)
-                cargarDatos(esSugerencias = tabLayout.selectedTabPosition == 0)
+                // Lógica visual después de conectar/desconectar
+                if (tabLayout.selectedTabPosition == 0) {
+                    // CASO 1: Estamos en "Sugerencias"
+                    // Si conectamos con él, ya no es sugerencia -> Lo quitamos de la lista
+                    if (position >= 0 && position < listaUsuarios.size) {
+                        listaUsuarios.removeAt(position)
+                        adapter.notifyItemRemoved(position)
+                        adapter.notifyItemRangeChanged(position, listaUsuarios.size) // Ajustar índices restantes
+
+                        if (listaUsuarios.isEmpty()) {
+                            tvEmpty.text = "No hay más sugerencias"
+                            tvEmpty.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
+                    // CASO 2: Estamos en "Mis Conexiones"
+                    // Invertimos el estado (seguir/dejar de seguir) y actualizamos el botón
+                    usuario.siguiendo = !usuario.siguiendo
+                    adapter.notifyItemChanged(position)
+                }
 
             } catch (e: Exception) {
                 Toast.makeText(context, "Error al conectar", Toast.LENGTH_SHORT).show()

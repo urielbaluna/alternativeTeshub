@@ -1,55 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".ui.comentarios.ComentariosActivity">
+    android:background="@android:color/white">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerComentarios"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="12dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:overScrollMode="never"/>
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="4dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back_white"
+            app:navigationIconTint="@android:color/black"
+            app:title="Comentarios"
+            app:titleTextColor="@android:color/black" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="@android:color/darker_gray">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <EditText
-            android:id="@+id/etComentario"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:hint="Escribe un comentario..."
-            android:inputType="textCapSentences|textMultiLine"
-            android:maxLines="3"
-            android:scrollHorizontally="false"
-            android:ellipsize="end"
-            android:background="@android:color/white"
             android:padding="8dp"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_comentario"/>
 
-        <Button
-            android:id="@+id/btnEnviarComentario"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enviar"
-            android:textStyle="bold"
-            android:backgroundTint="@color/teal_700"
-            android:textColor="@android:color/white"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:layout_marginStart="8dp"/>
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="#F5F5F5"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/et_nuevo_comentario"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Escribe un comentario..."
+                android:background="@drawable/rounded_gray_bg"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:maxLines="4"
+                android:inputType="textCapSentences|textMultiLine"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageButton
+                android:id="@+id/btn_enviar_comentario"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_comment"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="#2DA036"
+                android:contentDescription="Enviar comentario"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

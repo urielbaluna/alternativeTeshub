@@ -175,7 +175,7 @@ class EditarEventoActivity : AppCompatActivity() {
         }
 
         if (!evento.urlFoto.isNullOrEmpty()) {
-            val fullUrl = "${BuildConfig.API_BASE_URL}/${evento.urlFoto}"
+            val fullUrl = "${BuildConfig.API_BASE_URL}${evento.urlFoto}"
             Glide.with(this)
                 .load(fullUrl)
                 .placeholder(R.drawable.ic_image)

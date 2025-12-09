@@ -123,6 +123,55 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_calificacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F5F5F5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_titulo_calificacion"
+                        android:text="Calificar Proyecto"
+                        android:textStyle="bold"
+                        android:textColor="#424242"
+                        android:layout_marginBottom="8dp"/>
+
+                    <RatingBar
+                        android:id="@+id/rating_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="1.0"
+                        android:rating="0"
+                        android:progressTint="#FFC107"
+                        android:secondaryProgressTint="#FFC107"
+                        style="?android:attr/ratingBarStyle"/>
+                    <Button
+                        android:id="@+id/btn_enviar_calificacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enviar"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#2DA036"
+                        android:textColor="@android:color/white"
+                        android:minHeight="40dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

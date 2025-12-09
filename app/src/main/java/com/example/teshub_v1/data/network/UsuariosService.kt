@@ -63,11 +63,11 @@ interface UsuariosService {
     // --- INTERESES Y NETWORKING (NUEVO) ---
 
     // Obtener catálogo de intereses disponibles
-    @GET("api/usuarios/catalogo-intereses")
+    @GET("api/usuarios/intereses/catalogo")
     suspend fun getCatalogoIntereses(): List<Interes>
 
     // Guardar mis intereses seleccionados
-    @POST("api/usuarios/mis-intereses")
+    @POST("api/usuarios/intereses/actualizar")
     suspend fun actualizarMisIntereses(
         @Header("Authorization") token: String,
         @Body body: Map<String, List<Int>>
@@ -85,4 +85,33 @@ interface UsuariosService {
         @Header("Authorization") token: String,
         @Body body: Map<String, String>
     ): GeneralResponse
+
+    @POST("api/usuarios/solicitar-codigo")
+    suspend fun solicitarCodigoSesion(
+        @Header("Authorization") token: String
+    ): GeneralResponse
+
+    @Multipart
+    @POST("api/usuarios/registrar")
+    suspend fun registrarUsuario(
+        @Part("matricula") matricula: RequestBody,
+        @Part("nombre") nombre: RequestBody,
+        @Part("apellido") apellido: RequestBody,
+        @Part("correo") correo: RequestBody,
+        @Part("contrasena") contrasena: RequestBody,
+        @Part("rol") rol: RequestBody,
+        @Part("codigo_acceso") codigo: RequestBody?,
+        @Part imagen: MultipartBody.Part?
+    ): GeneralResponse
+
+    @POST("api/usuarios/ver-info-publicaciones")
+    suspend fun verPerfilUsuario(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>
+    ): com.example.teshub_v1.data.model.PublicacionesUsuarioResponse
+
+    @GET("api/usuarios/conexiones")
+    suspend fun obtenerMisConexiones(
+        @Header("Authorization") token: String
+    ): List<PerfilResponse>
 }

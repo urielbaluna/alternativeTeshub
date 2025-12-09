@@ -78,7 +78,7 @@ class EventosAdapter(
 
         // Cargar Imagen
         if (!evento.urlFoto.isNullOrEmpty()) {
-            val fullUrl = "${BuildConfig.API_BASE_URL}/${evento.urlFoto}"
+            val fullUrl = "${BuildConfig.API_BASE_URL}${evento.urlFoto}"
             Glide.with(holder.itemView.context)
                 .load(fullUrl)
                 .placeholder(R.drawable.ic_image) // Placeholder gris

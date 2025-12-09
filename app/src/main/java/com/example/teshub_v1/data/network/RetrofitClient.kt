@@ -38,4 +38,8 @@ object RetrofitClient {
     val revisionesService: RevisionesService by lazy {
         retrofit.create(RevisionesService::class.java)
     }
+
+    val busquedaService: BusquedaService by lazy {
+        retrofit.create(BusquedaService::class.java)
+    }
 }

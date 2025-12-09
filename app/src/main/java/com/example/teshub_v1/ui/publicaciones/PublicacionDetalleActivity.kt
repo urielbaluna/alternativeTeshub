@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -25,6 +26,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
+import android.widget.RatingBar
+import com.example.teshub_v1.data.model.CalificarRequest
+import org.json.JSONObject
 
 class PublicacionDetalleActivity : AppCompatActivity() {
 
@@ -42,6 +46,9 @@ class PublicacionDetalleActivity : AppCompatActivity() {
     private lateinit var chipEstado: Chip
     private lateinit var btnVerHistorial: TextView
     private lateinit var fabEditar: FloatingActionButton
+    private lateinit var ratingBar: RatingBar
+    private lateinit var btnCalificar: Button
+    private lateinit var cardCalificacion: View
     private var esAutor: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,14 +64,39 @@ class PublicacionDetalleActivity : AppCompatActivity() {
         publicacionId = intent.getIntExtra("id_publi", 0)
         esModoAsesor = intent.getBooleanExtra("modo_asesor", false)
 
-        if (publicacionId == 0) {
-            Toast.makeText(this, "Error: Publicación no encontrada", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+        if (publicacionId != 0) {
+            initViews()
+            cargarDetalle()
+            registrarVistaBackend()
         }
 
         initViews()
         cargarDetalle()
+    }
+
+    private fun registrarVistaBackend() {
+        val token = getSharedPreferences("sesion", Context.MODE_PRIVATE).getString("token", "") ?: return
+
+        lifecycleScope.launch {
+            try {
+                RetrofitClient.publicacionesService.registrarVista("Bearer $token", publicacionId)
+                Log.d("STATS", "Vista registrada")
+            } catch (e: Exception) {
+                Log.e("STATS", "Error al registrar vista", e)
+            }
+        }
+    }
+
+    private fun registrarDescargaBackend() {
+        val token = getSharedPreferences("sesion", Context.MODE_PRIVATE).getString("token", "") ?: return
+
+        lifecycleScope.launch {
+            try {
+                RetrofitClient.publicacionesService.registrarDescarga("Bearer $token", publicacionId)
+            } catch (e: Exception) {
+                Log.e("STATS", "Error al registrar descarga", e)
+            }
+        }
     }
 
     private fun initViews() {
@@ -79,6 +111,18 @@ class PublicacionDetalleActivity : AppCompatActivity() {
         btnVerHistorial = findViewById(R.id.tv_ver_historial)
         fabEditar = findViewById(R.id.fab_editar)
         btnVerHistorial.setOnClickListener { mostrarHistorialRevisiones() }
+        ratingBar = findViewById(R.id.rating_bar)
+        btnCalificar = findViewById(R.id.btn_enviar_calificacion)
+        cardCalificacion = findViewById(R.id.card_calificacion)
+        btnVerHistorial.setOnClickListener { mostrarHistorialRevisiones() }
+        btnCalificar.setOnClickListener {
+            val estrellas = ratingBar.rating
+            if (estrellas > 0) {
+                enviarCalificacion(estrellas.toInt())
+            } else {
+                Toast.makeText(this, "Selecciona al menos 1 estrella", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Botón ir a Comentarios
         findViewById<FloatingActionButton>(R.id.fab_comentarios).setOnClickListener {
@@ -90,8 +134,7 @@ class PublicacionDetalleActivity : AppCompatActivity() {
         fabEditar.setOnClickListener {
             val intent = Intent(this, CrearPublicacionActivity::class.java)
             intent.putExtra("MODO_EDICION", true)
-            intent.putExtra("ID_PUBLI", publicacionId) // publicacionId que ya tienes en esta actividad
-            // Opcional: Pasar datos actuales para no tener que volver a pedirlos
+            intent.putExtra("ID_PUBLI", publicacionId)
             intent.putExtra("TITULO_ACTUAL", tvTitulo.text.toString())
             intent.putExtra("DESC_ACTUAL", tvDescripcion.text.toString())
             startActivity(intent)
@@ -128,8 +171,29 @@ class PublicacionDetalleActivity : AppCompatActivity() {
                 esAutor = publi.integrantes?.any { it.matricula == miMatricula } ?: false
                 if (esAutor) {
                     fabEditar.visibility = View.VISIBLE
+                    cardCalificacion.visibility = View.GONE
                 } else {
                     fabEditar.visibility = View.GONE
+                    if (publi.miCalificacion != null && publi.miCalificacion > 0) {
+                        // YA CALIFICÓ: Mostrar su nota y bloquear
+                        cardCalificacion.visibility = View.VISIBLE
+                        ratingBar.rating = publi.miCalificacion.toFloat()
+                        ratingBar.setIsIndicator(true) // Hace que las estrellas sean solo lectura
+                        btnCalificar.visibility = View.GONE // Ocultar botón
+
+                        // Opcional: Cambiar título de la tarjeta
+                        val tvTituloCard = findViewById<TextView>(R.id.tv_titulo_calificacion) // (Asumiendo que le pongas ID al TextView "Calificar Proyecto")
+                        tvTituloCard?.text = "Tu Calificación"
+
+                    } else {
+                        // NO HA CALIFICADO: Permitir interacción
+                        cardCalificacion.visibility = View.VISIBLE
+                        ratingBar.rating = 0f
+                        ratingBar.setIsIndicator(false)
+                        btnCalificar.visibility = View.VISIBLE
+                        btnCalificar.isEnabled = true
+                        btnCalificar.text = "Enviar"
+                    }
                 }
 
                 tvTitulo.text = publi.nombre
@@ -149,7 +213,7 @@ class PublicacionDetalleActivity : AppCompatActivity() {
                 if (!publi.imagenPortada.isNullOrEmpty()) {
                     val baseUrl = BuildConfig.API_BASE_URL
                     Glide.with(this@PublicacionDetalleActivity)
-                        .load("$baseUrl/${publi.imagenPortada}")
+                        .load("$baseUrl${publi.imagenPortada}")
                         .placeholder(R.drawable.ic_image)
                         .error(R.drawable.ic_image)
                         .into(ivPortada)
@@ -201,7 +265,8 @@ class PublicacionDetalleActivity : AppCompatActivity() {
 
         // Al hacer click, abrir en navegador
         view.setOnClickListener {
-            val fullUrl = "${BuildConfig.API_BASE_URL}/$rutaRelativa"
+            registrarDescargaBackend()
+            val fullUrl = "${BuildConfig.API_BASE_URL}$rutaRelativa"
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
             startActivity(browserIntent)
         }
@@ -281,6 +346,45 @@ class PublicacionDetalleActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@PublicacionDetalleActivity, "Error de red", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private fun enviarCalificacion(puntos: Int) {
+        val token = getSharedPreferences("sesion", Context.MODE_PRIVATE).getString("token", "") ?: return
+
+        btnCalificar.isEnabled = false
+        btnCalificar.text = "..."
+
+        lifecycleScope.launch {
+            try {
+                val request = CalificarRequest(
+                    id_publi = publicacionId,
+                    evaluacion = puntos
+                )
+
+                val response = RetrofitClient.publicacionesService.calificarPublicacion("Bearer $token", request)
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@PublicacionDetalleActivity, "¡Gracias por calificar!", Toast.LENGTH_SHORT).show()
+                    cardCalificacion.visibility = View.GONE
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val msg = try {
+                        JSONObject(errorBody).optString("mensaje", "Error al calificar")
+                    } catch (e: Exception) { "Error desconocido" }
+
+                    Toast.makeText(this@PublicacionDetalleActivity, msg, Toast.LENGTH_SHORT).show()
+
+                    if (msg.contains("Ya calificaste")) {
+                        cardCalificacion.visibility = View.GONE
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("PublicacionDetalleActivity", "Error al calificar", e)
+                Toast.makeText(this@PublicacionDetalleActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+            } finally {
+                btnCalificar.isEnabled = true
+                btnCalificar.text = "Enviar"
             }
         }
     }

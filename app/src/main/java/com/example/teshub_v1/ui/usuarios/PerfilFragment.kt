@@ -158,7 +158,7 @@ class PerfilFragment : Fragment() {
                 // 4. Imagen
                 if (!perfil.imagen.isNullOrEmpty()) {
                     val baseUrl = BuildConfig.API_BASE_URL
-                    val fullUrl = if (baseUrl.endsWith("/")) baseUrl + perfil.imagen else "$baseUrl/${perfil.imagen}"
+                    val fullUrl = if (baseUrl.endsWith("/")) baseUrl + perfil.imagen else "$baseUrl${perfil.imagen}"
                     Glide.with(this@PerfilFragment)
                         .load(fullUrl)
                         .placeholder(R.drawable.ic_profile)
@@ -219,7 +219,7 @@ class PerfilFragment : Fragment() {
 
                     // Foto Asesor
                     if (!data.asesor.imagen.isNullOrEmpty()) {
-                        val fullUrl = "${BuildConfig.API_BASE_URL}/${data.asesor.imagen}"
+                        val fullUrl = "${BuildConfig.API_BASE_URL}${data.asesor.imagen}"
                         Glide.with(this).load(fullUrl).into(ivAsesorAvatar)
                     }
                 } else {
@@ -283,10 +283,10 @@ class PerfilFragment : Fragment() {
     private fun loadUserPublications(token: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                // Asegúrate que tu Retrofit esté llamando a 'obtenerUsuarioConPublicaciones' del backend
                 val response = RetrofitClient.publicacionesService.obtenerSoloPublicaciones("Bearer $token")
+
                 if (isAdded) {
-                    adapterPerfil.updateList(response.publicaciones)
+                    adapterPerfil.updateList(response.publicaciones ?: emptyList())
                 }
             } catch (e: Exception) {
                 Log.e("PERFIL", "Error pubs", e)

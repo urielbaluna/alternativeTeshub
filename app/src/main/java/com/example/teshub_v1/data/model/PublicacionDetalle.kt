@@ -12,6 +12,7 @@ data class PublicacionDetalle(
     val estado: String?, // "pendiente", "aprobado", etc.
     @Json(name = "imagen_portada") val imagenPortada: String?,
     @Json(name = "calificacion_promedio") val calificacion: String?,
+    @Json(name = "mi_calificacion") val miCalificacion: Int?,
 
     // Listas
     val archivos: List<String>? = emptyList(),

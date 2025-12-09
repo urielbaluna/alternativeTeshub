@@ -16,7 +16,7 @@ import com.google.android.material.chip.ChipGroup
 
 class ConnectionsAdapter(
     private var usuarios: MutableList<PerfilResponse>,
-    private val onConnectClick: (PerfilResponse) -> Unit,
+    private val onConnectClick: (PerfilResponse, Int) -> Unit,
     private val onItemClick: (PerfilResponse) -> Unit
 ) : RecyclerView.Adapter<ConnectionsAdapter.ViewHolder>() {
 
@@ -25,15 +25,14 @@ class ConnectionsAdapter(
         val tvNombre: TextView = view.findViewById(R.id.tv_nombre)
         val tvCarrera: TextView = view.findViewById(R.id.tv_carrera)
         val chipGroup: ChipGroup = view.findViewById(R.id.chip_group_intereses)
+
         val btnAccion: MaterialButton = view.findViewById(R.id.btn_accion)
 
         init {
             btnAccion.setOnClickListener {
-                onConnectClick(usuarios[adapterPosition])
+                onConnectClick(usuarios[bindingAdapterPosition], bindingAdapterPosition)
             }
-            itemView.setOnClickListener {
-                onItemClick(usuarios[adapterPosition])
-            }
+            itemView.setOnClickListener { onItemClick(usuarios[bindingAdapterPosition]) }
         }
     }
 
@@ -52,7 +51,7 @@ class ConnectionsAdapter(
         // Cargar imagen
         if (!user.imagen.isNullOrEmpty()) {
             val fullUrl = if (user.imagen.startsWith("http")) user.imagen
-            else "${BuildConfig.API_BASE_URL}/${user.imagen}"
+            else "${BuildConfig.API_BASE_URL}${user.imagen}"
             Glide.with(holder.itemView.context)
                 .load(fullUrl)
                 .placeholder(R.drawable.ic_profile)
@@ -72,9 +71,15 @@ class ConnectionsAdapter(
             holder.chipGroup.addView(chip)
         }
 
-        // Configurar botón (puedes cambiar lógica si ya están conectados)
-        holder.btnAccion.text = "Conectar"
-        holder.btnAccion.isEnabled = true
+        if (user.siguiendo) {
+            holder.btnAccion.text = "Siguiendo"
+            holder.btnAccion.setBackgroundColor(holder.itemView.context.getColor(android.R.color.darker_gray))
+            holder.btnAccion.setIconResource(R.drawable.ic_close)
+        } else {
+            holder.btnAccion.text = "Conectar"
+            holder.btnAccion.setBackgroundColor(holder.itemView.context.getColor(R.color.green_500))
+            holder.btnAccion.setIconResource(R.drawable.ic_add)
+        }
     }
 
     override fun getItemCount() = usuarios.size

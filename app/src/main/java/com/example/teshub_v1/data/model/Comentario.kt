@@ -1,14 +1,12 @@
 package com.example.teshub_v1.data.model
 
-import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class Comentario(
-    @Json(name = "comentario")
-    val comentario: String,
-
-    @Json(name = "nombre")
+    val matricula: String,
     val nombre: String,
-
-    @Json(name = "matricula")
-    val matricula: String?
+    val imagen: String?,
+    val comentario: String,
+    val fecha: String?
 )

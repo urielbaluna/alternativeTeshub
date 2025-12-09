@@ -11,17 +11,14 @@ data class PerfilResponse(
     val correo: String,
     val rol: String,
     val imagen: String?,
-
-    // --- NUEVOS CAMPOS ---
     val carrera: String?,
     val semestre: String?,
     val biografia: String?,
     val ubicacion: String?,
     val estado: Int?,
-
     val intereses: List<Interes>? = emptyList(),
     val estadisticas: EstadisticasRed? = null,
-
+    var siguiendo: Boolean = false,
     @Json(name = "total_publicaciones") val totalPublicaciones: Int,
     @Json(name = "publicacion_destacada") val publicacionDestacada: String?
 )

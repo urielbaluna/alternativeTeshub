@@ -55,5 +55,9 @@
             android:label="Detalle de Publicación"
             android:parentActivityName=".ui.home.HomeContainerActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity android:name=".ui.usuarios.PerfilOtroUsuarioActivity"
+            android:label="Perfil de Usuario"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 </manifest>

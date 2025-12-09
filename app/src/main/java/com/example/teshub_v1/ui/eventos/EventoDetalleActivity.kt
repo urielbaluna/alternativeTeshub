@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -42,6 +43,7 @@ class EventoDetalleActivity : AppCompatActivity() {
 
         eventoId = intent.getIntExtra("evento_id", 0)
         if (eventoId == 0) {
+            Log.e("EventoDetalleActivity", "Evento no válido")
             Toast.makeText(this, "Error: Evento no válido", Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -131,7 +133,7 @@ class EventoDetalleActivity : AppCompatActivity() {
         // Imagen
         if (!evento.urlFoto.isNullOrEmpty()) {
             Glide.with(this)
-                .load("${BuildConfig.API_BASE_URL}/${evento.urlFoto}")
+                .load("${BuildConfig.API_BASE_URL}${evento.urlFoto}")
                 .placeholder(R.drawable.ic_image)
                 .into(binding.ivDetalleImagen)
         }
